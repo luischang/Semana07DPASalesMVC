@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Finance\Data\" />
-    <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\Marketing\Data\" />
     <Folder Include="Areas\Marketing\Models\" />
   </ItemGroup>

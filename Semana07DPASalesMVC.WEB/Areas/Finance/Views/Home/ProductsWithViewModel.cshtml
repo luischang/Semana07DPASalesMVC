@@ -1,0 +1,31 @@
+﻿@using Semana07DPASalesMVC.WEB.Areas.Finance.Models
+@model IEnumerable<Product>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Title</th>
+            <th>Maker</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Description</td>
+                <td>
+                    <a href="@item.Url" target="_blank">@item.Title</a>
+                </td>
+                <td>@item.Maker</td>
+                <td>
+                    <img src="@item.Img" style="height:40px;width:40px;">
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

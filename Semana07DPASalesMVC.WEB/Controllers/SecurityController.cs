@@ -17,9 +17,14 @@ namespace Semana07DPASalesMVC.WEB.Controllers
         [HttpPost]
         public IActionResult Validate(string correo, string clave)
         {
-            if (correo == "admin@peru.com" && clave == "admin123")
+            if (correo == "finance@peru.com" && clave == "finance123")
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { Area = "Finance" });
+            }
+            else if (correo == "marketing@peru.com" && clave == "marketing123")
+            {
+                return RedirectToAction("Index", "Home", new { Area = "Marketing" });
+
             }
             else {
                 return RedirectToAction("Login","Security");
