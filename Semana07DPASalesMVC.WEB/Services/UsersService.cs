@@ -9,7 +9,7 @@ namespace Semana07DPASalesMVC.WEB.Services
     {
 
 
-        public async Task<UsersLoginResponseViewModel> Login(UsersAuthenticationViewModel auth)
+        public static async Task<UsersLoginResponseViewModel> Login(UsersAuthenticationViewModel auth)
         {
             var url = "http://localhost:5152/api/Users/Login";
             var json = JsonConvert.SerializeObject(auth);

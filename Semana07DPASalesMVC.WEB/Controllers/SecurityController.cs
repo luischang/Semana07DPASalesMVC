@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Semana07DPASalesMVC.WEB.Models;
+using Semana07DPASalesMVC.WEB.Services;
 
 namespace Semana07DPASalesMVC.WEB.Controllers
 {
@@ -15,20 +17,38 @@ namespace Semana07DPASalesMVC.WEB.Controllers
         }
 
         [HttpPost]
-        public IActionResult Validate(string correo, string clave)
+        public async Task<IActionResult> Validate(string correo, string clave)
         {
-            if (correo == "finance@peru.com" && clave == "finance123")
+            var userAuth = new UsersAuthenticationViewModel()
             {
-                return RedirectToAction("Index", "Home", new { Area = "Finance" });
-            }
-            else if (correo == "marketing@peru.com" && clave == "marketing123")
-            {
-                return RedirectToAction("Index", "Home", new { Area = "Marketing" });
+                Email = correo,
+                Password = clave
+            };
 
-            }
-            else {
-                return RedirectToAction("Login","Security");
-            }
+            var userResponse = await UsersService.Login(userAuth);
+            if (userResponse == null)
+                return RedirectToAction("Login", "Security");
+
+            var roleCode = userResponse.RoleCode;
+            if (roleCode == "MARKETING")
+                return RedirectToAction("Index", "Home", new { Area = "Marketing" });
+            else if (roleCode == "FINANCE")
+                return RedirectToAction("Index", "Home", new { Area = "Finance" });
+            else
+                return RedirectToAction("Login", "Security");
+
+            //if (correo == "finance@peru.com" && clave == "finance123")
+            //{
+            //    return RedirectToAction("Index", "Home", new { Area = "Finance" });
+            //}
+            //else if (correo == "marketing@peru.com" && clave == "marketing123")
+            //{
+            //    return RedirectToAction("Index", "Home", new { Area = "Marketing" });
+
+            //}
+            //else {
+            //    return RedirectToAction("Login","Security");
+            //}
         }
 
 
