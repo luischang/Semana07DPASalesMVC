@@ -4,30 +4,170 @@
             <h3>Mantenimiento de Clientes</h3>
         </div>
         <div class="col-md-2">
-            <button id="btnAgregarCliente" 
-                class="btn btn-primary">Agregar
+            <button id="btnAgregarCliente"
+                    class="btn btn-primary">
+                Agregar
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalRegistroCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mantenimiento de Clientes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nombres</label>
+                                <input type="text" class="form-control" id="txtNombre" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Apellidos</label>
+                                <input type="text" class="form-control" id="txtApellido" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>País</label>
+                                <input type="text" class="form-control" id="txtPais" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Ciudad</label>
+                                <input type="text" class="form-control" id="txtCiudad" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="text" class="form-control" id="txtTelefono" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarCliente">Guardar</button>
+                <input type="hidden" id="hidIdCliente" value="-1" />
+            </div>
         </div>
     </div>
 </div>
 
 
 <div id="divListadoCliente">
-
 </div>
 
 
 <script>
+    $("#divListadoCliente").on('click', '.btnEditarCliente', function () {
+        let vIdCliente = $(this).attr('data-id');
+        $("#hidIdCliente").val(vIdCliente);
+        var myModal = new bootstrap.Modal(document.getElementById('modalRegistroCliente'))
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Obtener","Customer", new {Area = "Marketing"})',
+            cache: false,
+            data: { id: vIdCliente },
+            success: function (objCliente) {
+                $("#txtNombre").val(objCliente.firstName);
+                $("#txtApellido").val(objCliente.lastName);
+                $("#txtPais").val(objCliente.country);
+                $("#txtCiudad").val(objCliente.city);
+                $("#txtTelefono").val(objCliente.phone);
+                myModal.show();
+            }
+        })
+
+    });
+
+    $("#divListadoCliente").on('click', '.btnEliminarCliente', function () {
+        let vIdCliente = $(this).attr('data-id');
+        if (confirm("¿Está seguro de eliminar al cliente?")) {
+
+            $.ajax({
+                type: "DELETE",
+                url: '@Url.Action("Eliminar","Customer", new {Area = "Marketing"})',
+                cache: false,
+                data: { id: vIdCliente },
+                success: function (exito) {
+                    if (exito) {
+                        CargarClientes();
+                    }
+                }
+            })
+        }
+    });
+
+
+    $("#btnGuardarCliente").click(function () {
+        let vIdCliente = $("#hidIdCliente").val();
+        let vNombre = $("#txtNombre").val();
+        let vApellido = $("#txtApellido").val();
+        let vPais = $("#txtPais").val();
+        let vCiudad = $("#txtCiudad").val();
+        let vTelefono = $("#txtTelefono").val();
+        var myModal = new bootstrap.Modal(document.getElementById('modalRegistroCliente'))
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Grabar","Customer", new {Area="Marketing"})',
+            cache: false,
+            data: {
+                idCliente: vIdCliente,
+                nombre: vNombre,
+                apellido: vApellido,
+                pais: vPais,
+                ciudad: vCiudad,
+                telefono: vTelefono
+            },
+            success: function (valorRespuesta) {
+                if (!valorRespuesta)
+                    alert("Ocurrió un error al grabar el cliente")
+                else {
+                    alert("Se registró correctamente....");
+                    CargarClientes();
+                    myModal.hide();
+                }
+            }, error: function () {
+                alert("Ocurrió un error en el servidor")
+            }
+
+        });
+
+    })
+
+
+    $("#btnAgregarCliente").click(function () {
+        var myModal = new bootstrap.Modal(document.getElementById('modalRegistroCliente'))
+        myModal.show()
+    })
+
+
     CargarClientes();
-    function CargarClientes(){
+    function CargarClientes() {
         $.ajax({
             type: "GET",
             url: '@Url.Action("Listado","Customer",new {Area = "Marketing"})',
-            cache:false,
-            success: function(dataHTML){
+            cache: false,
+            success: function (dataHTML) {
                 $("#divListadoCliente").html(dataHTML);
             }
-        });    
+        });
     }
 
 

@@ -1,7 +1,7 @@
 ﻿@{
     var customers = ViewBag.ListadoClientes as IEnumerable<CustomerCountryViewModel>;
 }
-<table class="table table-striped">
+<table id="tbListadoCliente" class="table table-striped">
     <thead>
         <tr>
             <th>Id</th>
@@ -20,10 +20,25 @@
                 <td>@item.LastName</td>
                 <td>@item.Country</td>
                 <td>
-                    <button class="btn btn-warning">Editar</button>
-                    <button class="btn btn-danger">Eliminar</button>
+                    <button class="btn btn-warning btnEditarCliente" data-id="@item.Id">Editar</button>
+                    <button class="btn btn-danger btnEliminarCliente" data-id="@item.Id">Eliminar</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    loadDataTable();
+    function loadDataTable(){
+        let table = $("#tbListadoCliente").DataTable({
+            lengthChange:false,
+            buttons: ['copy','excel','pdf','colvis','print']
+        });
+
+        table.buttons().container()
+            .insertBefore("#tbListadoCliente_filter")
+    }
+
+
+</script>
